@@ -1,0 +1,19 @@
+{
+  "name": "Lippy",
+  "version": "0.0.0",
+  "authors": [
+    "Emmie <cocobunnie1234@gmail.com>"
+  ],
+  "description": "Make up colour picker application",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass-official": "~3.3.4"
+  }
+}
