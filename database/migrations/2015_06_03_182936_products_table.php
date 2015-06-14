@@ -24,10 +24,11 @@ class ProductsTable extends Migration {
             $table->string('HEX');
             $table->string('RGB');
             $table->string('colour');
+            $table->string('link');
             
             
 		});
-                DB::statement('ALTER TABLE products ADD FULLTEXT search(name, brand)');
+                DB::statement('ALTER TABLE products ADD FULLTEXT search(name,   brand,HEX,RGB,colour)');
 	}
 
 	/**

@@ -1,5 +1,6 @@
 $( document ).ready(function() {
     console.log( "ready!" );
+    
 });
 
 // Variables
@@ -9,11 +10,9 @@ var $valid = false;
 var canvas = document.getElementById('canvas_picker').getContext('2d');
 var $overlay = $('<div id="overlay" onclick="nooverlay()" class="overlay"></div>');
 
-
-
 var allowedExtensions = {
-        '.jpg'  : 1,
-        '.png' :1
+        '.jpg' :1,
+        '.png' :1,
 };
 
 
@@ -73,30 +72,18 @@ function validation(e)
     load();
     $("body").append($overlay);
     $overlay.show();
-    console.log("its seeing it");
     $overlay.fadeIn();
     $('#PictureUpload').show();
 
     var $files = document.getElementById('file_upload').files[0];
     var $f = document.getElementById('file_upload').files;
-
-
+    
     var reader = new FileReader();
     reader.onload = imageIsLoaded;
     reader.readAsDataURL($files);  
-         
-            var ajax = new XMLHttpRequest();
-            ajax.onreadystatechange = function(){
-                if (ajax.readyState === 4){
-                console.log("ajax");
-                    };
-                }
-            
-            ajax.open('GET', '');
-            ajax.send();
-    
     return false;
     }
+
        
 function nooverlay(){
     $overlay.hide();
@@ -137,7 +124,7 @@ function imageIsLoaded(e) {
     }
 
 $('#canvas_picker').click(function(event){
-var x = event.pageX - $(this).offset().left; // Fixed coordinates
+  var x = event.pageX - $(this).offset().left; // Fixed coordinates
   var y = event.pageY - $(this).offset().top; // respective to canvas offs.
   var img_data = context.getImageData(x,y , 1, 1).data;
   var R = img_data[0];
@@ -163,6 +150,126 @@ function toHex(n) {
   n = Math.max(0, Math.min(n, 255));
   return "0123456789ABCDEF".charAt((n - n % 16) / 16)  + "0123456789ABCDEF".charAt(n % 16);
 	}
+
+
+function reminder(){
+    $('html, body').animate({ scrollTop: 0 }, 'slow');
+    document.getElementById('Message').style.display = "block";
+    document.getElementById('Message').innerHTML = "Upload a photo and pick a colour Don't worry its easy!";
+}
+
+function changeadd(val){
+    
+    var allowedExtensions = {
+        '.jpg'  :1,
+        '.png' :1,
+        '.gif' :1,
+
+};
+    
+    var match = /\..+$/;
+    var ext = val.match(match);
+    
+     if (allowedExtensions[ext]) 
+    {
+        var imagesize = $('#addfile')[0].files[0].size;
+         if (window.File && window.FileReader && window.FileList && window.Blob)
+    {
+        if(imagesize>1048976){
+document.getElementById('addmessage').innerHTML = "Whoa! File too big, choose smaller image";            
+        } else {
+            document.getElementById('addmessage').innerHTML = "";   
+        }
+        
+    } else{
+        
+     alert("Please upgrade your browser, because your current browser lacks some new    features we need!");
+    }
+    
+    } else {
+    
+       document.getElementById('addmessage').innerHTML = "Make sure file is correct format! PNG or JPG";
+        return false;
+
+    }
+    
+    //show image
+    var $fileadd = document.getElementById('addfile').files[0];
+    var $f = document.getElementById('addfile').files;
+    var readerfile = new FileReader();
+
+    readerfile.onload = showImage;
+    readerfile.readAsDataURL($fileadd);  
+    
+
+}
+
+function uploadmessage(){
+    if( document.getElementById("addfile").files.length == 0 ){
+    document.getElementById('addmessage').innerHTML = "Please upload an image first to get HEX and RBG values";   
+    } else{
+    document.getElementById('addmessage').innerHTML = "Click on the image to choose a colour!";   
+    }
+}
+ 
+
+function showImage(i) {
+    // canvas on add page
+    var canvasadd = document.getElementById('canvasadd').getContext('2d');
+    var canvasadd = $('#canvasadd')[0];
+    var contextadd = canvasadd.getContext('2d');
+    var xa = 0;
+    var ya = 0;
+    var widtha = 400;
+    var heighta = 300;
+    var $pickedadd = $("#pickedadd");
+    var imgadd = new Image();
+    
+    imgadd.onload = function(){
+    canvasadd.width  = 400;
+    canvasadd.height = 300;   
+    contextadd.drawImage(imgadd, xa, ya,widtha,heighta);
+    $("#loader").hide().fadeOut("slow");
+        
+  };
+  imgadd.src = i.target.result;
+    
+     $('#canvasadd').click(function(event){
+          document.getElementById('addmessage').innerHTML = "";   
+         var xa = event.pageX - $(this).offset().left; // Fixed coordinates
+         var ya = event.pageY - $(this).offset().top; //
+         var img_data = contextadd.getImageData(xa,ya , 1, 1).data;
+         
+          var R = img_data[0];
+          var G = img_data[1];
+          var B = img_data[2]; 
+          var rgb = R + ',' + G + ',' + B ;
+          var hex = rgbToHex(R,G,B);
+          $('#RGB').val( rgb );
+          $('#HEX').val('#' + hex);
+             
+    $pickedadd.css('background-color','#'+hex);       
+}); 
+    
+    }
+
+function validateadd(e){
+//valadate fields
+    //document.getElementById('')
+    //if valadation passes do ajax request
+    e.preventDefault();
+     $.ajax({
+            type: "POST",
+            url: host+'/comment/add',
+        }).done(function( msg ) {
+            alert( msg );
+        });    
+}
+
+function backhome(){
+    // Exits to home screen
+window.location.href = "/";
+}
 
 
 

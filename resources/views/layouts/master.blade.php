@@ -7,8 +7,8 @@
 	</head>
 	<body>
 		<header>
-            <img src="img/LippyLogored.png" class="logo"/>
-            <h6 class="search_terms">Popular Search Terms: NARS, MAC, Urban Decay</h6>
+            <a href="{{URL::to('/')}}"><img src="img/LippyLogored.png" class="logo"/></a>
+            <h6 class="search_terms">Popular Search Terms: NARS, MAC, Urban Decay, all.</h6>
         {!! Form::model(null, array('route' => array('posts.search'))) !!}
             <input type="text" id="searchinput" name="searchinput" class="search" placeholder="Search..." >
             </input>

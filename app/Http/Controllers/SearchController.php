@@ -11,52 +11,44 @@ use DB;
 class SearchController extends Controller {
     
 
-	/*
-	|--------------------------------------------------------------------------
-	| Search Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller renders the "marketing page" for the application and
-	| is configured to only allow guests. Like most of the other sample
-	| controllers, you are free to modify or remove it as you desire.
-	|
-	*/
-	
-	/**
-	 * Show the application welcome screen to the user.
-	 *
-	 * @return Response
-	 */
     
 	public function index()
         
 	{
         
-    $searchterm = Input::get('searchinput');
-
-    if ($searchterm){
-
-        $products = DB::table('products');            
-        $results = $products->where('name','LIKE','%'. $searchterm .'%')
-        ->orWhere('description','LIKE','%'. $searchterm .'%')
-        ->orWhere('brand','LIKE','%'. $searchterm .'%')
-        ->get();
-        return view('search')->with('results', $results);                 
-
-         }
+        return view('errors.404');
+   
      }
+    
     public function postSearch()
 {
-
-
+        
         $q = Input::get('searchinput');
-	    $products = DB::table('products')->whereRaw(
-	        "MATCH(name,brand) AGAINST(? IN BOOLEAN MODE)", 
+        
+        if ($q == "" ||$q == 'all'){
+            $products =  DB::table('products')->simplePaginate(10);
+                return view('search')->with('products', $products);
+        } else {
+             $products = DB::table('products')->whereRaw(
+	        "MATCH(name,brand,HEX,RGB,colour) AGAINST(? IN BOOLEAN MODE)", 
 	        array($q)
-	    )->get();
-	    return view('search')->with('products', $products);
-    
+	    )->simplePaginate(10); 
+                return view('search')->with('products', $products);
+
+        }
     }
+      
+     public function searchmatch()
+	{
+         $hex = Input::get('HEX');
+            $products = DB::table('products')->whereRaw(
+	        "MATCH(HEX,RGB) AGAINST(? IN BOOLEAN MODE)", 
+	        array($hex)
+	    )->simplePaginate(10);
+         
+         
+	    return view('search')->with('products', $products);
+	}
 }
     
     
