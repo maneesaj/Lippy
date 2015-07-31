@@ -16,41 +16,40 @@ class SearchController extends Controller {
         
 	{
         
-        return view('errors.404');
-   
+        return view('search');   
      }
     
     public function postSearch()
 {
         
-        $q = Input::get('searchinput');
-        
+        $q = Input::get('searchinput');      
         if ($q == "" ||$q == 'all'){
-            $products =  DB::table('products')->simplePaginate(10);
-                return view('search')->with('products', $products);
+            $products =  DB::table('products');
+	    return view('search')->with('products', $products->get());
+                                    
         } else {
              $products = DB::table('products')->whereRaw(
-	        "MATCH(name,brand,HEX,RGB,colour) AGAINST(? IN BOOLEAN MODE)", 
+	        "MATCH(name,brand,HEX,RGB,ColourList,colour) AGAINST(? IN BOOLEAN MODE)", 
 	        array($q)
-	    )->simplePaginate(10); 
-                return view('search')->with('products', $products);
-
+	    )->get(); 
+	    return view('search')->with('products', $products);
         }
     }
       
      public function searchmatch()
 	{
          $hex = Input::get('HEX');
-            $products = DB::table('products')->whereRaw(
-	        "MATCH(HEX,RGB) AGAINST(? IN BOOLEAN MODE)", 
-	        array($hex)
-	    )->simplePaginate(10);
+         $rgb = Input::get('RGB');
+         $Inputcolour = Input::get('colour');
+         $ColourListInput = Input::get('ColourList');
+         
+         $products = DB::table('products')
+        ->whereRaw('MATCH(HEX,RGB,ColourList,colour) AGAINST(? IN BOOLEAN MODE)', array("$hex $rgb $Inputcolour $ColourListInput"));             
          
          
-	    return view('search')->with('products', $products);
+	    return view('search')->with('products', $products->get());
 	}
 }
-    
     
     
 

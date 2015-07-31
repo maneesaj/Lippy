@@ -41,6 +41,14 @@ Route::post(
 	    )
 	);
 
+Route::get(
+	    'login',
+	    array(
+	        'as' => 'login', 
+	        'uses' => 'LoginController@index'
+	    )
+	);
+
 Route::get('add_product', array(
     'as'   => 'add', // This is the route's name
     'uses' => 'AddproductController@index'

@@ -13,7 +13,7 @@ class AddproductController extends Controller {
 	{
     
 		return view('add_product');
-        
+
 
 	}
     
@@ -25,36 +25,26 @@ class AddproductController extends Controller {
         $InputD = Input::get('description');
         $Inputhex = Input::get('HEX');
         $Inputrgb = Input::get('RGB');
-        $Inputcolour = Input::get('Colour');
+        $Inputcolour = Input::get('colour');
+        $ColourListInput = Input::get('ColourList');
         $Inputlink = Input::get('Link');
         $Inputfile = Input::file('image');
-        
-        $destinationPath = public_path().'/img/';
+                
+        $destinationPath = public_path().'/img/Uploaded';
         $file            = $Inputfile;
         $destinationPath = 'img';
         $filename        = $file->getClientOriginalName();
         $uploadSuccess   = $file->move($destinationPath, $filename);
         
-         if(Request::ajax()){
+        
              
         DB::table('products')->insert(array(
-            'name' => $Inputname,'brand' =>$Inputbrand,'price' =>$Inputprice,'description' => $InputD,'HEX' => $Inputhex,'RGB' => $Inputrgb,'colour' => $Inputcolour, 'pathtoimage' =>$uploadSuccess,'link' =>$Inputlink
-            
-        ));
-              $response = array(
-                'status' => 'success',
-                'msg' => 'Setting created successfully',
-            );
-            return 'yea';
-        } else{
-            return 'No';
-         }
-        
-        return view('add_product');
-
+            'name' => $Inputname,'brand' =>$Inputbrand,'price' =>$Inputprice,'description' => $InputD,'HEX' => $Inputhex,'RGB' => $Inputrgb,'colour' => $Inputcolour, 'pathtoimage' =>$uploadSuccess,'link' =>$Inputlink,'ColourList' => $ColourListInput));
+           
+             
+        return redirect('add_product')->withMessage('Product successfully uploaded for approval!');
     }
 
 }
-
 
 

@@ -1,8 +1,3 @@
-$( document ).ready(function() {
-    console.log( "ready!" );
-    
-});
-
 // Variables
 var $fileinfo = document.getElementsByName('file_info').value;
 var $file = document.getElementsByName('file_upload').value;
@@ -69,19 +64,29 @@ var fileName = val.substr(val.lastIndexOf("\\")+1, val.length);
 function validation(e)
     // Validates Image Data
 {
+  
+    if (document.getElementById('file_info').value != ""){
+        
     load();
     $("body").append($overlay);
     $overlay.show();
     $overlay.fadeIn();
     $('#PictureUpload').show();
-
+    document.getElementById('Message').style.display = "none";
     var $files = document.getElementById('file_upload').files[0];
     var $f = document.getElementById('file_upload').files;
-    
     var reader = new FileReader();
     reader.onload = imageIsLoaded;
     reader.readAsDataURL($files);  
     return false;
+        
+    } else {
+    
+        document.getElementById('Message').style.display = "block";
+        document.getElementById('Message').innerHTML = 'Dont forget to choose an image';
+        
+        }
+   
     }
 
        
@@ -111,7 +116,7 @@ function load(){
     var img = new Image();
 
 function imageIsLoaded(e) {
-    // canvas
+    // If image is loaded - Draw it
     img.onload = function(){
     canvas.width  = 600;
     canvas.height = 440;   
@@ -124,18 +129,18 @@ function imageIsLoaded(e) {
     }
 
 $('#canvas_picker').click(function(event){
-  var x = event.pageX - $(this).offset().left; // Fixed coordinates
-  var y = event.pageY - $(this).offset().top; // respective to canvas offs.
-  var img_data = context.getImageData(x,y , 1, 1).data;
-  var R = img_data[0];
-  var G = img_data[1];
-  var B = img_data[2]; 
-  var rgb = R + ',' + G + ',' + B ;
-  var hex = rgbToHex(R,G,B);
-  $('#rgb input').val( rgb );
-  $('#hex input').val('#' + hex);
-    
-    
+      var x = event.pageX - $(this).offset().left; // Fixed coordinates
+      var y = event.pageY - $(this).offset().top; // respective to canvas offs.
+      var img_data = context.getImageData(x,y , 1, 1).data;
+      var R = img_data[0];
+      var G = img_data[1];
+      var B = img_data[2];  
+      var rgb = R + ',' + G + ',' + B ;
+      var hex = rgbToHex(R,G,B);
+      $('#rgb input').val(rgb);
+        var n_match  = ntc.name(hex);
+      $('#hex input').val('#' + hex);
+    $('#colour input').val(n_match[1]);
     $picked.css('background-color','#'+hex);
     
 });
@@ -235,7 +240,7 @@ function showImage(i) {
   imgadd.src = i.target.result;
     
      $('#canvasadd').click(function(event){
-          document.getElementById('addmessage').innerHTML = "";   
+        document.getElementById('addmessage').innerHTML = "";   
          var xa = event.pageX - $(this).offset().left; // Fixed coordinates
          var ya = event.pageY - $(this).offset().top; //
          var img_data = contextadd.getImageData(xa,ya , 1, 1).data;
@@ -245,30 +250,40 @@ function showImage(i) {
           var B = img_data[2]; 
           var rgb = R + ',' + G + ',' + B ;
           var hex = rgbToHex(R,G,B);
+          var n_match  = ntc.name(hex);
           $('#RGB').val( rgb );
+          $('#color').val(  );
           $('#HEX').val('#' + hex);
+          $('#colour input').val(n_match[1]);
              
     $pickedadd.css('background-color','#'+hex);       
 }); 
     
     }
 
-function validateadd(e){
-//valadate fields
-    //document.getElementById('')
-    //if valadation passes do ajax request
-    e.preventDefault();
-     $.ajax({
-            type: "POST",
-            url: host+'/comment/add',
-        }).done(function( msg ) {
-            alert( msg );
-        });    
-}
-
 function backhome(){
     // Exits to home screen
 window.location.href = "/";
+}
+
+function validateadd(){
+//disabled button
+$("#submitadd").attr("disabled", "disabled"); 
+    
+    //if valadation passes do ajax request
+   // m.preventDefault();
+    var name = document.getElementById('#name').value;
+    var brand = document.getElementById('#brand').value;
+    var price = document.getElementById('#price').value;
+    var description = document.getElementById('#description').value;
+    var Hex = document.getElementById('#HEX').value;
+    var Rgb = document.getElementById('#RGB').value;
+    var colour =  document.getElementById('#colour input').value;
+    var colourList = document.getElementById('#ColourList').value;
+    var picture = document.getElementById('#addfile').files;
+
+
+    
 }
 
 
